@@ -60,8 +60,11 @@
 <script>
   export default {
     methods: {
-      deleteRow (index, rows) {
-        rows.splice(index, 1)
+      deleteRow (index) {
+        this.$store.commit({
+          type: 'deleteStaff',
+          id: this.tableData[index].id
+        })
       },
       handleClick (index, rows) {
         let path = '/detail/' + rows[index].id
@@ -73,13 +76,17 @@
         form.date = rows[index].date
         form.address = rows[index].address
         form.index = index
+        form.id = rows[index].id
         this.dialogFormVisible = true
       },
       handleEdit (rows, form) {
-        let index = form.index
-        rows[index].name = form.name
-        rows[index].date = form.date
-        rows[index].address = form.address
+        this.$store.commit({
+          type: 'addStaff',
+          id: form.id,
+          date: form.date,
+          name: form.name,
+          address: form.address
+        })
         this.dialogFormVisible = false
       },
       handleExitEdit () {
@@ -90,35 +97,20 @@
         this.dialogFormVisible = false
       }
     },
+    computed: {
+      tableData () {
+        return this.$store.state.staffs
+      }
+    },
     data () {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          id: 0
-        }, {
-          date: '2016-05-04',
-          name: '王大虎',
-          address: '上海市普陀区金沙江路 1517 弄',
-          id: 1
-        }, {
-          date: '2016-05-01',
-          name: '王二虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          id: 2
-        }, {
-          date: '2016-05-03',
-          name: '王虎',
-          address: '上海市普陀区金沙江路 1516 弄',
-          id: 3
-        }],
         dialogFormVisible: false,
         form: {
           name: '',
           date: '',
           address: '',
-          index: -1
+          index: -1,
+          id: -1
         }
       }
     }
