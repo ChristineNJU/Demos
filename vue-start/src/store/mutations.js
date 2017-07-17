@@ -45,3 +45,13 @@ export const mutations = {
     state.staffs.splice(index, 1)
   }
 }
+
+export const actions = {
+  getStaff (state, payload) {
+    this.$http.get('/api/staffs').then(response => {
+      console.log(response)
+    }, response => {
+      console.error(response)
+    })
+  }
+}
