@@ -1,7 +1,7 @@
 /**
  * Created by christine on 2017/7/17.
  */
-// const models = require('./db')
+const models = require('./db')
 const express = require('express')
 const router = express.Router()
 
@@ -61,7 +61,13 @@ router.post('/api/staffs', (req, res) => {
 
 // 获取已有账号接口
 router.get('/api/staffs', (req, res) => {
-  res.send(staffList)
+  models.Staff.find((err,data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(data);
+    }
+  });
 })
 
 router.put('/api/staffs', (req, res) => {
