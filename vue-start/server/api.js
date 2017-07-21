@@ -72,32 +72,43 @@ router.get('/api/staffs', (req, res) => {
 
 router.put('/api/staffs', (req, res) => {
   let body = req.body
-  let staff = {date: body.date, name: body.name, address: body.address, id: body.id}
-  let index = staffList.findIndex(function (item) {
-    return item.id === body.id
-  })
-  console.log('update staff:', staff)
-  staffList[index] = staff
+  let staff = {date: body.date, name: body.name, address: body.address}
+  // let index = staffList.findIndex(function (item) {
+  //   return item.id === body.id
+  // })
+  // console.log('update staff:', staff)
+  // staffList[index] = staff
+  // console.log(body)
   let resBody = {
     success: 1,
     data: {
     }
   }
-  res.send(resBody)
+  models.Staff.update({_id:body.id}, staff, {upsert : true}, (err) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(resBody);
+    }
+  });
+
 })
 
-router.delete('/api/staffs', (req, res) => {
-  let index = staffList.findIndex(function (item) {
-    return item.id === req.body.id
-  })
-  console.log('delete staff:', staffList[index])
-  staffList.splice(index, 1)
+router.delete('/api/staffs/:id', (req, res) => {
   let resBody = {
     success: 1,
     data: {
     }
   }
-  res.send(resBody)
+  // console.log(req.params)
+  // console.log(req)
+  models.Staff.remove({_id:req.params.id}, (err) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(resBody);
+    }
+  });
 })
 
 module.exports = router

@@ -70,7 +70,7 @@
         form.date = rows[index].date
         form.address = rows[index].address
         form.index = index
-        form.id = rows[index].id
+        form.id = rows[index]._id
         this.dialogFormVisible = true
       },
       handleExitEdit () {
@@ -96,7 +96,7 @@
       _handleDelete (index) {
         this.$store.dispatch({
           type: 'deleteStaff',
-          id: this.tableData[index].id
+          id: this.tableData[index]._id
         })
       }
     },

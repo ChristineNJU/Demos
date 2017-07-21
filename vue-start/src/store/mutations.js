@@ -15,6 +15,7 @@ export const mutations = {
     let index = state.staffs.findIndex(function (item) {
       return item.id === id
     })
+    console.log('in updateSuccess', date)
     state.staffs[index] = {id: id, name: name, address: address, date: date}
     state.staffs = state.staffs.slice(0)
   },
@@ -53,6 +54,7 @@ export const actions = {
     })
   },
   updateStaff ({commit}, {date, name, address, id}) {
+    console.log('in mutations, id:' + id)
     Vue.http.put('/api/staffs', {
       date: date,
       name: name,
@@ -66,15 +68,13 @@ export const actions = {
         address: address,
         id: id
       })
-      console.log(response.data)
     }, response => {
       console.error(response)
     })
   },
   deleteStaff ({commit}, {id}) {
-    Vue.http.delete('/api/staffs', {
-      id: id
-    }).then(response => {
+    console.log('delete Staff', id)
+    Vue.http.delete('/api/staffs/' + id).then(response => {
       commit({
         type: 'deleteSuccess'
       })
