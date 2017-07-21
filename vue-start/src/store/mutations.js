@@ -1,4 +1,5 @@
 export const STORAGE_KEY = 'todos-vuejs'
+import Vue from 'vue'
 
 // for testing
 if (navigator.userAgent.indexOf('PhantomJS') > -1) {
@@ -6,31 +7,11 @@ if (navigator.userAgent.indexOf('PhantomJS') > -1) {
 }
 
 export const state = {
-  staffs: [{
-    date: '2016-05-02',
-    name: '王小虎',
-    address: '上海市普陀区金沙江路 1518 弄',
-    id: 0
-  }, {
-    date: '2016-05-04',
-    name: '王大虎',
-    address: '上海市普陀区金沙江路 1517 弄',
-    id: 1
-  }, {
-    date: '2016-05-01',
-    name: '王二虎',
-    address: '上海市普陀区金沙江路 1519 弄',
-    id: 2
-  }, {
-    date: '2016-05-03',
-    name: '王虎',
-    address: '上海市普陀区金沙江路 1516 弄',
-    id: 3
-  }]
+  staffs: []
 }
 
 export const mutations = {
-  addStaff (state, { id, name, address, date }) {
+  updateSuccess (state, { id, name, address, date }) {
     let index = state.staffs.findIndex(function (item) {
       return item.id === id
     })
@@ -38,18 +19,66 @@ export const mutations = {
     state.staffs = state.staffs.slice(0)
   },
 
-  deleteStaff (state, {id}) {
+  deleteSuccess (state, {id}) {
     let index = state.staffs.findIndex(function (item) {
       return item.id === id
     })
     state.staffs.splice(index, 1)
+  },
+
+  initStaff (state, {data}) {
+    console.log(data)
+    state.staffs = data
   }
 }
 
 export const actions = {
-  getStaff (state, payload) {
-    this.$http.get('/api/staffs').then(response => {
+  fetchStaff ({ commit }, payload) {
+    Vue.http.get('/api/staffs').then(response => {
+      commit({
+        type: 'initStaff',
+        data: response.data
+      })
+    }, response => {
+      console.error(response)
+    })
+  },
+  insertStaff ({commit}, {date, name, address}) {
+    Vue.http.post('/api/staffs', {
+      date: date, name: name, address: address
+    }).then(response => {
       console.log(response)
+    }, response => {
+      console.error(response)
+    })
+  },
+  updateStaff ({commit}, {date, name, address, id}) {
+    Vue.http.put('/api/staffs', {
+      date: date,
+      name: name,
+      address: address,
+      id: id
+    }).then(response => {
+      commit({
+        type: 'updateSuccess',
+        date: date,
+        name: name,
+        address: address,
+        id: id
+      })
+      console.log(response.data)
+    }, response => {
+      console.error(response)
+    })
+  },
+  deleteStaff ({commit}, {id}) {
+    Vue.http.delete('/api/staffs', {
+      id: id
+    }).then(response => {
+      commit({
+        type: 'deleteSuccess'
+      })
+      console.log(response.data)
     }, response => {
       console.error(response)
     })

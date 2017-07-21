@@ -28,7 +28,7 @@
           <!--<el-button type="text" size="small" @click="showEditor(scope.$index, tableData, form, dialogFormVisible)">编辑</el-button>-->
           <el-button type="text" size="small" @click="showEditor(scope.$index, tableData, form)">编辑</el-button>
           <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
+            @click.native.prevent="_handleDelete(scope.$index, tableData)"
             type="text"
             size="small">
             移除
@@ -51,7 +51,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleExitEdit()">取 消</el-button>
-        <el-button type="primary" @click="handleEdit(tableData, form)">确 定</el-button>
+        <el-button type="primary" @click="_handleEdit(tableData, form)">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -60,12 +60,6 @@
 <script>
   export default {
     methods: {
-      deleteRow (index) {
-        this.$store.commit({
-          type: 'deleteStaff',
-          id: this.tableData[index].id
-        })
-      },
       handleClick (index, rows) {
         let path = '/detail/' + rows[index].id
         this.$router.push(path)
@@ -79,9 +73,19 @@
         form.id = rows[index].id
         this.dialogFormVisible = true
       },
-      handleEdit (rows, form) {
-        this.$store.commit({
-          type: 'addStaff',
+      handleExitEdit () {
+        this.form.name = ''
+        this.form.address = ''
+        this.form.date = ''
+        this.form.index = -1
+        this.dialogFormVisible = false
+      },
+      _fetchData () {
+        this.$store.dispatch('fetchStaff')
+      },
+      _handleEdit (rows, form) {
+        this.$store.dispatch({
+          type: 'updateStaff',
           id: form.id,
           date: form.date,
           name: form.name,
@@ -89,13 +93,17 @@
         })
         this.dialogFormVisible = false
       },
-      handleExitEdit () {
-        this.form.name = ''
-        this.form.address = ''
-        this.form.date = ''
-        this.form.index = -1
-        this.dialogFormVisible = false
+      _handleDelete (index) {
+        this.$store.dispatch({
+          type: 'deleteStaff',
+          id: this.tableData[index].id
+        })
       }
+    },
+    created () {
+      // 组件创建完后获取数据，
+      // 此时 data 已经被 observed 了
+      this._fetchData()
     },
     computed: {
       tableData () {
