@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
     Table,
     TableBody,
@@ -30,9 +31,9 @@ const data = [{
     status: 'unemployed',
 }];
 
-const List = ({history}) => {
+const List = ({history,staffs}) => {
 
-    function handleClick (rowNumber,columnId){
+    function handleClick (rowNumber){
         history.push('/detail/'+rowNumber);
     }
 
@@ -47,7 +48,7 @@ const List = ({history}) => {
                 </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-                {data.map((item,index) => {
+                {staffs.map((item,index) => {
                     return (
                         <TableRow key={index} >
                             <TableRowColumn>{item.id}</TableRowColumn>
@@ -61,4 +62,17 @@ const List = ({history}) => {
     )
 };
 
-export default List;
+const mapStateToProps = state => {
+    return {
+        staffs: state.initialStaffs
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {}
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(List);
