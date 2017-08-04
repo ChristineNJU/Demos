@@ -3,12 +3,12 @@ import ReactDom from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {  HashRouter as Router, Route, Link, Switch} from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
+import createHashHistory from 'history/createBrowserHistory';
 import { createStore,combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
 import reducers from './reducers';
-const browserHistory = createBrowserHistory();
+const browserHistory = createHashHistory();
 import List from './pages/index.jsx';
 import Detail from './pages/detail.jsx';
 import NoMatch from './pages/NoMatch.jsx';
@@ -42,5 +42,6 @@ ReactDom.render((
 ), document.getElementById('content'));
 
 history.listen(location => {
+    console.log(window.location);
     console.log(location);
 });
